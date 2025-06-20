@@ -27,7 +27,8 @@ class Nonogram:
         Using clues create possible lines()
         1 represents filled square, 0 represents blank
         '''
-        possibilities = []
+        possibilities = {}
+        index = 0
         for clue in clues:
             segments = len(clue)
             no_empty_cells = no_cells-sum(clue) - segments + 1
@@ -43,16 +44,13 @@ class Nonogram:
                 res_opt = [filled[val]+[0] if val > -1 else [0] for val in selected]
                 res_opt = [item for sublist in res_opt for item in sublist][:-1]
                 pos.append(res_opt)
-            possibilities.append(pos)
+            possibilities[index] = pos
+            index += 1
         return possibilities
     
     def  get_neighbors(self, row_index):
         neighbors = copy.deepcopy(self.row_possibilities)
-        print(neighbors)
-        print('\n')
         del neighbors[row_index]
-        print(neighbors)
-        print('\n')
         return neighbors
     
     def get_columns(self):
@@ -75,3 +73,4 @@ class Nonogram:
     def get_domain_size(self):
         return len(self.row_possibilities[0][0])
 nonogram = Nonogram('5x5.csv')
+print(nonogram.col_possibilities)
