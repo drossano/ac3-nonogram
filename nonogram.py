@@ -1,11 +1,17 @@
 import csv
+import copy
 from itertools import combinations
 class Nonogram:
     def __init__(self,nono_file):
-        self.clues = dict()
+        
         print(nono_file)
         self.clues = self.generate_clues(nono_file)
+        print(len(self.clues['row']))
+        # to be used as vars
+        self.rows = [[] for clue in self.clues['row']]
+        # to be used as domain
         self.row_possibilities = self.generate_possibilities(self.clues['row'], len(self.clues['row']))
+        # to be used as constraints
         self.col_possibilities = self.generate_possibilities(self.clues['col'], len(self.clues['col']))
 
     def generate_clues(self, filename):
@@ -39,7 +45,14 @@ class Nonogram:
                 res_opt = [item for sublist in res_opt for item in sublist][:-1]
                 possibilities.append(res_opt)
         return possibilities
+    
+    def  get_neighbors(self, row_index):
+        neighbors = copy.deepcopy(self.rows)
+        del neighbors[row_index]
+        return neighbors
+    
+    def get_columns(self, rows):
+        return [list(i) for i in zip(*rows)]
+
             
 nonogram = Nonogram('5x5.csv')
-print(nonogram.row_possibilities)
-print(nonogram.col_possibilities)
