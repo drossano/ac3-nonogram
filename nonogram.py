@@ -4,11 +4,10 @@ from itertools import combinations
 class Nonogram:
     def __init__(self,nono_file):
         
-        print(nono_file)
         self.clues = self.generate_clues(nono_file)
         # to be used as vars
         self.rows = [[] for clue in self.clues['row']]
-        # to be used as domain
+        # to be used as vars w/domain
         self.row_possibilities = self.generate_possibilities(self.clues['row'], len(self.clues['row']))
         # to be used as constraints
         self.col_possibilities = self.generate_possibilities(self.clues['col'], len(self.clues['col']))
@@ -33,6 +32,7 @@ class Nonogram:
             segments = len(clue)
             no_empty_cells = no_cells-sum(clue) - segments + 1
             filled = [[1] * value for value in clue]
+            pos = []
             for p in combinations(range(segments+no_empty_cells), segments):
                 selected = [-1]*(segments+no_empty_cells)
                 filled_idx = 0
@@ -42,20 +42,25 @@ class Nonogram:
 
                 res_opt = [filled[val]+[0] if val > -1 else [0] for val in selected]
                 res_opt = [item for sublist in res_opt for item in sublist][:-1]
-                possibilities.append(res_opt)
+                pos.append(res_opt)
+            possibilities.append(pos)
         return possibilities
     
     def  get_neighbors(self, row_index):
-        neighbors = copy.deepcopy(self.rows)
+        neighbors = copy.deepcopy(self.row_possibilities)
+        print(neighbors)
+        print('\n')
         del neighbors[row_index]
+        print(neighbors)
+        print('\n')
         return neighbors
     
-    def get_columns(self, rows):
-        return [list(i) for i in zip(*rows)]
+    def get_columns(self):
+        return [list(i) for i in zip(*self.rows)]
     
-    def print_nonogram(self,rows):
+    def print_nonogram(self):
         solution = ""
-        for row in rows:
+        for row in self.get_columns():
             print_row = ""
             for cell in row:
                 if cell == 1:
@@ -66,4 +71,7 @@ class Nonogram:
 
         print(solution)
         return solution
+    
+    def get_domain_size(self):
+        return len(self.row_possibilities[0][0])
 nonogram = Nonogram('5x5.csv')
