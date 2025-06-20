@@ -19,3 +19,8 @@ def test_get_columns():
         num += 1
     print(test_nono.rows)
     assert test_nono.get_columns(test_nono.rows) ==  [[1,3,5,7,9],[2,4,6,8,10]]
+
+def test_print_nonogram():
+    test_nono = Nonogram("5x5.csv")
+    test_nono.rows = [[1,0],[0,1]]
+    assert test_nono.print_nonogram(test_nono.rows) == " # .\n . #\n"

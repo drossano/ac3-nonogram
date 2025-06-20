@@ -6,7 +6,6 @@ class Nonogram:
         
         print(nono_file)
         self.clues = self.generate_clues(nono_file)
-        print(len(self.clues['row']))
         # to be used as vars
         self.rows = [[] for clue in self.clues['row']]
         # to be used as domain
@@ -53,6 +52,18 @@ class Nonogram:
     
     def get_columns(self, rows):
         return [list(i) for i in zip(*rows)]
+    
+    def print_nonogram(self,rows):
+        solution = ""
+        for row in rows:
+            print_row = ""
+            for cell in row:
+                if cell == 1:
+                    print_row += " #"
+                else:
+                    print_row += " ."
+            solution += print_row + "\n"
 
-            
+        print(solution)
+        return solution
 nonogram = Nonogram('5x5.csv')
