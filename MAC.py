@@ -1,4 +1,5 @@
 from nonogram import Nonogram
+import copy
 
 class MAC:
     def __init__(self, nonogram):
@@ -6,16 +7,18 @@ class MAC:
         self.all_variables = nonogram.row_possibilities
         self.col_constraints = nonogram.col_possibilities
         self.assigned = []
+
+
+
     
     def find_conflict(self, tail_index, tail, head_index, head):
         conflict = False
         # get row num of tail and head
         #for each value of tail and head
-        for i in range(len(tail[0])):
+        for i in range(len(tail)):
             for column in self.col_constraints[i]:
                 if column[tail_index] != tail[i] and column[head_index] != head[i]:
-                    conflict = True
-                    break
+                    return True
         return conflict
         #check if there's a column possibilty that matches those rows
         # ie first pair = first column indexed at those rows
@@ -25,17 +28,17 @@ class MAC:
         checks if two rows can be part of a vaild column
         '''
         revised = False
-        tail_values = getAllVariables()[tail]
+        tail_values = self.getAllVariables()[tail]
         if len(tail_values) != 1:
             for tail_possibility in tail_values:
                 supported = False
-                for head_possibility in getAllVariables()[head]:
+                for head_possibility in self.getAllVariables()[head]:
                     if self.find_conflict(tail, tail_possibility, head, head_possibility) == False:
                         supported = True
                         break
-                    if supported == False:
-                        tail_values.remove(0)
-                        revised = True
+                if supported == False:
+                    del tail_values[0]
+                    revised = True
         return revised
 
     def init_AC3(self):
@@ -45,14 +48,72 @@ class MAC:
             for neigh in self.nonogram.get_neighbors(row_index).keys():
                 arcs.append((neigh, pos))
             row_index += 1
-        return arcs
-
-def getAllVariables(self):
-    return self.all_variables
-
+        return self.AC3(arcs)
     
+    def AC3(self, arcs):
+        
+        while True:
+            current_arc = arcs.pop(0)
+            if self.revise(current_arc[0], current_arc[1]) == True:
+
+                if len(self.getAllVariables()[current_arc[0]]) == 0:
+                    return False
+            else:
+                neighbors = self.nonogram.get_neighbors(current_arc[0])
+                # neighbors.remove(current_arc[1])
+                del neighbors[current_arc[1]]
+                for neighbor in neighbors:
+                    new_arc = (neighbor, current_arc[0])
+                    arcs.append(new_arc)
+            if len(arcs) > 0:
+                break
+        return True
+        
+
+    def search(self):
+        n = self.select_unassigned()
+        if n == None:
+            return True
+        self.assigned.append(n)
+        print(f"{n}, {len(self.assigned)}")
+        while self.all_variables[n]:
+            value = self.all_variables[n].pop(0)
+            all_var_copy = copy.deepcopy(self.all_variables)
+            self.all_variables[n].clear()
+            self.all_variables[n].append(value)
+            arcs = []
+
+            for neighbors in self.nonogram.get_neighbors(n):
+                arcs.append((neighbors, n))
+            if self.AC3(arcs) and self.search():
+                return True
+            else:
+                print(f"{n}  reverting")
+                self.all_variables = all_var_copy
+        self.assigned.remove(n)
+        return False
+
+    def getAllVariables(self):
+        return self.all_variables
+    
+    def is_assigned(self, var):
+        return var in self.assigned
+
+    def select_unassigned(self):
+        smallest_var = None
+        for var in self.all_variables.keys():
+            if self.is_assigned(var) == False:
+                if smallest_var == None:
+                    smallest_var = var
+                elif len(self.all_variables[var]) < len(self.all_variables[smallest_var]):
+                    smallest_var = var
+        return smallest_var
 nono = Nonogram("5x5.csv")
 mac = MAC(nono)
 #print(mac.all_variables)
-print(mac.init_AC3())
+if mac.init_AC3() and mac.search():
+    print("Solution found")
+    nono.print_nonogram()
+else:
+    print("Can't find solution")
                 

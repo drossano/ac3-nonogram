@@ -58,9 +58,9 @@ class Nonogram:
     
     def print_nonogram(self):
         solution = ""
-        for row in self.get_columns():
+        for i in range(len(self.row_possibilities)):
             print_row = ""
-            for cell in row:
+            for cell in self.row_possibilities[i][0]:
                 if cell == 1:
                     print_row += " #"
                 else:
@@ -73,4 +73,3 @@ class Nonogram:
     def get_domain_size(self):
         return len(self.row_possibilities[0][0])
 nonogram = Nonogram('5x5.csv')
-print(nonogram.col_possibilities)
