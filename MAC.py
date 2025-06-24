@@ -12,58 +12,26 @@ class MAC:
 
     
     def find_conflict(self, tail_index, tail, head_index, head):
+           
         conflict = False
         # get row num of tail and head
         #for each value of tail and head
-        test_board = copy.deepcopy(self.nonogram.rows)
-        test_board[tail_index] = tail
-        test_board[head_index] = head
-
-        # check if each column of the test board is valid
-        valid_column = True
-        # for each column_index in columns:
-        for column_index in range(len(tail)):
-            column_possibilities = self.col_constraints[column_index]
-            #   for each column_possibulity in column_index
-            for column_possibility in column_possibilities:
-        #       if each cell in column_pos == each row on test board at column index
-                for row_index in range(len(column_possibility)):
-                    # if test board has data in this row check if it matches the coloumn, if not go to next row
-                    if test_board[row_index]:
-                        # if the row position in the column matches the test board go to the next row
-                        # if not try a different column
-                        # if we exhaust all the cloumn possibilities and there's no match there's a conflict
-                        # if all the rows in a column possibilitiy match move to the next column
-                        if column_possibility[row_index] != test_board[row_index][column_index]:
-                                if column_possibilities.index(column_possibility) + 1 == len(column_possibilities):
-                                    return True
-                                else:
-                                    break
-                        elif row_index + 1 == len(column_possibility):
-                            break
-        #           if each index has a vald possibility return false
-        #       if all column possibilities in cofumn index are conflicts break and return true
-                    # return True
+        for i in range(len(tail)):
+            column_possibilities = self.col_constraints[i]
+            for column in column_possibilities:
+                if column[tail_index] != tail[i] or column[head_index] != head[i]:
+                    # if last column possibility return true
+                    if column_possibilities.index(column) + 1 == len(column_possibilities):
+                        return True
+                    # try another column if there's a conflict
+                    else:
+                        continue
+                    
+                else:
+                    break
         return conflict
-
-
-
-
-
-        # for i in range(len(tail)):
-        #     valid_columns = 0
-        #     for column in self.col_constraints[i]:
-        #         for j in range(len(test_board)):
-        #             if test_board[j] and column[j] != test_board[j][i]:
-        #                 break
-
-        # if valid_columns == 5:
-        #     return False
-        # else:
-        #     return True
         #check if there's a column possibilty that matches those rows
         # ie first pair = first column indexed at those rows
-    
     def revise(self, tail, head):
         '''
         checks if two rows can be part of a vaild column
@@ -85,7 +53,7 @@ class MAC:
         else:
             # locks in row for tail with 1 possibility
             self.nonogram.rows[tail] = valid[0]
-            
+        self.getAllVariables()[tail] = valid   
         return revised
 
     def init_AC3(self):
