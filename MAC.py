@@ -126,7 +126,7 @@ class MAC:
         return smallest_var
     
     
-nono = Nonogram("5x5.csv")
+nono = Nonogram("nonograms/5x5/*.csv")
 mac = MAC(nono)
 start_time = time.time()
 #print(mac.all_variables)

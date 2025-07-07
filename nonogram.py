@@ -1,10 +1,11 @@
 import csv
 import copy
+import glob
 from itertools import combinations
 class Nonogram:
     def __init__(self,nono_file):
         
-        self.clues = self.generate_clues(nono_file)
+        self.clues = self.generate_clues(glob.glob(nono_file)[0])
         # to be used as vars
         self.rows = [[] for clue in self.clues['row']]
         # to be used as vars w/domain
@@ -72,4 +73,3 @@ class Nonogram:
     
     def get_domain_size(self):
         return len(self.row_possibilities[0][0])
-nonogram = Nonogram('5x5.csv')
