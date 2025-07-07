@@ -1,4 +1,5 @@
 from nonogram import Nonogram
+import time
 import copy
 
 class MAC:
@@ -123,11 +124,16 @@ class MAC:
                 elif len(self.all_variables[var]) < len(self.all_variables[smallest_var]):
                     smallest_var = var
         return smallest_var
+    
+    
 nono = Nonogram("5x5.csv")
 mac = MAC(nono)
+start_time = time.time()
 #print(mac.all_variables)
 if mac.init_AC3() and mac.search():
+    elapsed_time = time.time() - start_time
     print("Solution found")
+    print(f"Runtime: {elapsed_time}" )
     nono.print_nonogram()
 else:
     print("Can't find solution")
