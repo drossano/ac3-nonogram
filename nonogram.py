@@ -68,7 +68,6 @@ class Nonogram:
                     print_row += " ."
             solution += print_row + "\n"
 
-        print(solution)
         return solution
     
     def get_domain_size(self):

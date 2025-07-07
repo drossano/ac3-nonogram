@@ -1,6 +1,7 @@
 from nonogram import Nonogram
 import time
 import copy
+import sklearn.metrics
 
 class MAC:
     def __init__(self, nonogram):
@@ -126,15 +127,3 @@ class MAC:
         return smallest_var
     
     
-nono = Nonogram("nonograms/5x5/*.csv")
-mac = MAC(nono)
-start_time = time.time()
-#print(mac.all_variables)
-if mac.init_AC3() and mac.search():
-    elapsed_time = time.time() - start_time
-    print("Solution found")
-    print(f"Runtime: {elapsed_time}" )
-    nono.print_nonogram()
-else:
-    print("Can't find solution")
-                
