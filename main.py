@@ -4,7 +4,7 @@ import time
 import glob
 from sklearn.metrics import accuracy_score
 def  main():
-    directory = ('nonograms/15x15')
+    directory = ('nonograms/10x10')
     nono = Nonogram(f"{directory}/*.csv")
     mac = MAC.MAC(nono)
     start_time = time.time()
